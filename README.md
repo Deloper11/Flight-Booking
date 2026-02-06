@@ -1,4 +1,4 @@
-# Online-Flight-Management-System
+# Online-Flight-Management-System-Book
 A simple project based on an Online Flight Booking System Project that uses PHP Language with MySQL Database. It has a number of features that will allow users to book online flight tickets. This web application as well as the website’s concept is all clear. It’s the same as real-life scenarios and well-implemented on it. 
 
 # **About Online Flight Booking System PHP Project**
@@ -38,4 +38,4 @@ To access the page online click the link: [https://ofbmskyu.000webhostapp.com/in
 
 #AUTHORS 
 
-1.KelvinMutuku
+1.MD TAJUL ISLAM
