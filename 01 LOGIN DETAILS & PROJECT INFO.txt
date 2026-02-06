@@ -1,11 +1,12 @@
-**Database Name: ofbsphp**
+**Database Name: etaphp**
 
-**Developed by KelvinMutuku**
+**Developed by MD TAJUL ISLAM**
 
-**Recommended PHP Version 5.6, 7.4**
+**Recommended PHP Version 5.6, 7.4,8.2,8.4**
 
 
 **Admin Login Details**
 
 Username: admin
-Password: codeastro.com
+
+Password: eattourtravel.com
