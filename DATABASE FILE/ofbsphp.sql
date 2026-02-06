@@ -2,8 +2,8 @@
 -- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 15, 2023 at 05:40 PM
+-- Host: 
+-- Generation Time: Feb 06, 2026 at 09:35 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.10
 
@@ -18,10 +18,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ofbsphp`
+-- Database: `etaphp`
 --
-CREATE DATABASE IF NOT EXISTS `ofbsphp` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `ofbsphp`;
+CREATE DATABASE IF NOT EXISTS `etaphp` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `etaphp`;
 
 -- --------------------------------------------------------
 
@@ -81,7 +81,7 @@ CREATE TABLE `cities` (
 -- Dumping data for table `cities`
 --
 
-INSERT INTO `cities` (`city`) VALUES
+INSERT INTO `cities` (`city Name  `) VALUES
 ('Nairobi'),
 ('Kisumu'),
 ('Mombasa'),
