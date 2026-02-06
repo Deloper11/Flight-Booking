@@ -1,934 +1,1342 @@
-<?php include_once 'helpers/helper.php'; ?>
-	<?php subview('header.php'); 
-    require 'helpers/init_conn_db.php';                      
-	?> 	
-<style>
-/*--
-	Author: W3layouts
-	Author URL: http://w3layouts.com
-	License: Creative Commons Attribution 3.0 Unported
-	License URL: http://creativecommons.org/licenses/by/3.0/
---*/
-footer {
-  /* position: absolute; */
-  bottom: 0;
-  width: 100%;
-  height: 2.5rem;            /* Footer height */
-}
-form.logout_form {
-	background: transparent;
-	padding: 10px !important;
-}
-body {
-	background:url('assets/images/plane1.jpg') no-repeat 0px 0px;
-	background-size: cover;
-	font-family: 'Open Sans', sans-serif;
-	background-attachment: fixed;
-    background-position: center;
-	/* background: #bdc3c7; 
-    background: -webkit-linear-gradient(to right, #2c3e50, #bdc3c7);
-    background: linear-gradient(to right, #2c3e50, #bdc3c7);  */
+<?php 
+session_start();
+include_once 'helpers/helper.php'; 
+subview('header.php');
+require 'helpers/init_conn_db.php'; 
+
+// Security headers
+header("X-Frame-Options: DENY");
+header("X-Content-Type-Options: nosniff");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+
+// CSRF token for forms
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-h1,h2,h3,h4,h5,h6{
-	font-family: 'Montserrat', sans-serif;
-	
-}
-h5.text-light {
-	margin-top: 10px;
-}
-@font-face {
-  font-family: 'product sans';
-  src: url('assets/css/Product Sans Bold.ttf');
-}
-h1{
-    font-family :'product sans' !important;
-	color:cornflowerblue ;
-	font-size:50px;
-	margin-top:50px;
-	text-align:center;
-}
-
-.main-agileinfo{
-	margin:50px auto;
-	width:50%;
-}
-/*--SAP--*/
-.sap_tabs{
-	clear:both;
-	padding: 0;
-}
-.tab_box{
-	background:#fd926d;
-	padding: 2em;
-}
-.top1{
-	margin-top: 2%;
-}
-.resp-tabs-list {
-    list-style: none;
-    padding: 15px 0px;
-    margin: 0 auto;
-    text-align: center;
-	/* background: rgb(33, 150, 243); */
-	background: rgb(78 103 114);
-}
-.resp-tab-item {
-    font-size: 1.1em;
-    font-weight: 500;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0;
-    text-align: center;
-    list-style: none;
-    outline: none;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -ms-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    margin: 0 1.2em 0;
-	color:#b1b1b1;
-	padding:7px 15px;
-}
-
-.resp-tab-active {
-	color:#fff;	
-}
-.resp-tabs-container {
-	padding: 0px;
-	clear: left;	
-}
-h2.resp-accordion {
-	cursor: pointer;
-	padding: 5px;
-	display: none;
-}
-.resp-tab-content {
-	display: none;
-}
-.resp-content-active, .resp-accordion-active {
-   display: block;
-}
-form {
-    background:rgba(3, 3, 3, 0.57);
-    padding: 25px;
-}
-
-h3 {
-    font-size: 16px;
-    color:rgb(255, 255, 255);
-    margin-bottom: 7px;
-}
-.from,.to,.date,.depart,.return{
-	width:48%;
-	float:left;
-}
-
-.from,.to,.date{
-	margin-bottom:40px;
-}
-.from,.date,.depart{
-	margin-right:4%;
-}
-input[type="text"]{
-	padding:10px;
-	width:93%;
-	float:left;
-}
-input#datepicker,input#datepicker1,input#datepicker2,input#datepicker3 {
-    width: 85%;
-	margin-bottom:10px;
-}
-select#w3_country1 {
-    padding: 10px;
-	float:left;
-}
-label.checkbox {
-  display: inline-block;
-}
-.checkbox {
-    position: relative;
-    font-size: 0.95em;
-    font-weight: normal;
-    color:#dedede;
-    padding: 0em 0.5em 0em 2em;
-}
-.checkbox i {
-    position: absolute;
-    bottom: 1px;
-    left: 2px;
-    display: block;
-    width: 18px;
-    height: 18px;
-    outline: none;
-    background: #fff;
-    border: 1px solid #6A67CE;
-}
-.checkbox i {
-    font-size: 20px;
-    font-weight: 400;
-    color: #999;
-    font-style: normal;
-}
-.checkbox input:checked + i:after {
-    opacity: 1;
-}
-.checkbox input + i:after {
-    position: absolute;
-    opacity: 0;
-    transition: opacity 0.1s;
-    -o-transition: opacity 0.1s;
-    -ms-transition: opacity 0.1s;
-    -moz-transition: opacity 0.1s;
-    -webkit-transition: opacity 0.1s;
-}
-.checkbox input + i:after {
-    content: '';
-    background: url("assets/images/tick.png") no-repeat 5px 5px;
-    top: -1px;
-    left: -1px;
-    width: 15px;
-    height: 15px;
-    font: normal 12px/16px FontAwesome;
-    text-align: center;
-}
-input[type="checkbox"]{
-	opacity:0;
-	margin:0;
-	display:none;
-}
-
-.quantity-select .entry.value-minus {
-    margin-left: 0;
-}
-.value-minus, .value-plus {
-    height: 40px;
-    line-height: 24px;
-    width: 40px;
-    margin-right: 3px;
-    display: inline-block;
-    cursor: pointer;
-    position: relative;
-    font-size: 18px;
-    color: #fff;
-    text-align: center;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    border: 1px solid #b2b2b2;
-    vertical-align: bottom;
-}
-
-.value {
-    cursor: default;
-    width: 40px;
-    height:33px;
-    color: #000;
-    line-height: 24px;
-    border: 1px solid #E5E5E5;
-    background-color: #fff;
-    text-align: center;
-    display: inline-block;
-    margin-right: 3px;
-	padding-top:7px;
-}
-
-.quantity-select .entry.value-minus:hover, .quantity-select .entry.value-plus:hover {
-    background:rgba(0, 0, 0, 0.6);;
-}
-.value-minus, .value-plus {
-    height: 40px;
-    line-height: 24px;
-    width: 40px;
-    margin-right: 3px;
-    display: inline-block;
-    cursor: pointer;
-    position: relative;
-    font-size: 18px;
-    text-align: center;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    border: 1px solid #b2b2b2;
-    vertical-align: bottom;
-}
-.quantity-select .entry.value-minus:before, .quantity-select .entry.value-plus:before {
-    content: "";
-    width: 13px;
-    height: 2px;
-    background: #fff;
-    left: 50%;
-    margin-left: -7px;
-    top: 50%;
-    margin-top: -0.5px;
-    position: absolute;
-}
-.quantity-select .entry.value-plus:after {
-    content: "";
-    height: 13px;
-    width: 2px;
-    background: #fff;
-    left: 50%;
-    margin-left: -1.4px;
-    top: 50%;
-    margin-top: -6.2px;
-    position: absolute;
-}
-
-.numofppl,.adults,.child{
-	width:50%;
-	float:left;
-}
-.class{
-	width:48%;
-	float:left;
-}
-input[type="submit"] {
-    font-size: 18px;
-    color: #fff;
-    background:#4caf50;
-    border: none;
-    outline: none;
-    padding: 10px 20px;
-    margin-top: 50px;
-	cursor:pointer;
-	 transition: 0.5s all ease;
-    -webkit-transition: 0.5s all ease;
-    -moz-transition: 0.5s all ease;
-    -o-transition: 0.5s all ease;
-    -ms-transition: 0.5s all ease;
-}
-input[type="submit"]:hover  {
-    background:#212121;
-	color:#fff;
-}
-/*-- load-more --*/
-ul#myList{
-	margin-bottom:2em;
-}
-#myList li{ 
-	display:none;
-	list-style-type:none;
-}
-#loadMore,#showLess {
-	display: inline-block;
-    cursor: pointer;
-    padding: 7px 20px;
-    background: #fff;
-    font-size: 14px;
-    color: #fff;
-    transition: 0.5s all ease;
-    -webkit-transition: 0.5s all ease;
-    -moz-transition: 0.5s all ease;
-    -o-transition: 0.5s all ease;
-    -ms-transition: 0.5s all ease;
-    background: rgb(33, 150, 243);
-}
-#loadMore:hover  {
-    background:#212121;
-	color:#fff;
-}
-
-.spcl{
-	position:relative;
-}
-
-.ui-datepicker {width:16.2%;
-	padding: 0 0em 0;
-	}
-	.ui-datepicker .ui-datepicker-header {
-	  position: relative;
-	  padding: .56em 0;
-	  background:rgb(33, 150, 243);;
-	  text-transform: uppercase;
-	}
-
-form.blackbg{
-	background:rgba(3, 3, 3, 0.57);
-}
-/*-- //load-more --*/
-.footer-w3l {
-    margin: 50px 0 15px 0;
-}
-.footer-w3l p{
-	font-size:14px;
-	text-align:center;
-	color:#000;
-	line-height:27px;
-}
-.footer-w3l p a{
-	color:#000;
-}
-.footer-w3l p a:hover{
-	text-decoration:underline;
-}
-/*-- responsive --*/
- @media (max-width:1440px){
-	.checkbox {
-		font-size: 0.9em;
-	}
-}
- @media (max-width:1366px){
-	.main-agileinfo {
-		width: 53%;
-	}
-}
- @media (max-width:1280px){
-	.main-agileinfo {
-		width: 57%;
-	}
-}
- @media (max-width:1080px){
-	h1 {
-		color: #fff;
-		font-size: 47px;
-	}
-	.main-agileinfo {
-		width: 68%;
-	}
-}
- @media (max-width:1024px){
-	.main-agileinfo {
-		width: 71%;
-	}
-}
- @media (max-width:991px){
-	.from, .to, .date, .depart, .return {
-		width: 49%;
-		float: left;
-	}
-	.from, .date, .depart {
-		margin-right: 2%;
-	}
-}
- @media (max-width:966px){
-	.main-agileinfo {
-		width: 73%;
-	}
-	
-}
- @media (max-width:900px){
-	.checkbox {
-		font-size: 0.82em;
-	}
-}
- @media (max-width:800px){
-	.main-agileinfo {
-		width: 81%;
-	}
-}
- @media (max-width:768px){
-	.main-agileinfo {
-		width: 85%;
-	}
-	.checkbox i {
-		width: 15px;
-		height: 15px;
-	}
-	.checkbox input + i:after {
-		top: -3px;
-		left: -3px;
-	}
-}
- @media (max-width:736px){
-	.main-agileinfo {
-		width: 88%;
-		margin:40px auto;
-	}
-	h1 {
-		color: #fff;
-		font-size: 43px;
-		margin-top:40px;
-	}
-	input[type="text"] {
-		padding: 10px;
-		width: 90%;
-		float: left;
-	}
-	input#datepicker, input#datepicker1, input#datepicker2, input#datepicker3 {
-		width: 79%;
-	}
-	.value-minus, .value-plus {
-		height: 30px;
-		width: 30px;
-	}
-	.value {
-		width: 33px;
-		height: 25px;
-		padding-top: 6px;
-	}
-}
- @media (max-width:667px){
-	.numofppl {
-		width: 60%;
-	}
-	.roundtrip .date {
-		width: 68%;
-		float:left;
-	}
-	.roundtrip .class{
-		width:30%;
-		float:left;
-	}
-	.oneway .depart,.multicity .depart{
-		width: 68%;
-	}
-}
- @media (max-width:600px){
-	select#w3_country1 {
-		width: 100%;
-	}
-}
- @media (max-width:568px){
-	h1 {
-		font-size: 40px;
-	}
-	.resp-tab-item {
-		padding: 7px 13px;
-		margin: 0 1em 0;
-	}
-	.numofppl {
-		width: 70%;
-	}
-}
- @media (max-width:480px){
-	.resp-tab-item {
-		padding: 7px 7px;
-		margin: 0 0.7em 0;
-	}
-	 input[type="text"] {
-		padding: 10px;
-		width: 86%;
-		float: left;
-	}
-	.roundtrip .date {
-		width: 100%;
-		float: left;
-	}
-	input#datepicker, input#datepicker1, input#datepicker2, input#datepicker3 {
-		width: 86%;
-	}
-	.roundtrip .class{
-		width: 100%;
-		float: left;
-		margin-bottom:40px;
-	}
-	.numofppl {
-		width: 80%;
-	}
-	.oneway .depart, .multicity .depart {
-		width: 100%;
-	}
-}
- @media (max-width:414px){
-	h1 {
-		font-size: 35px;
-		margin-top:30px;
-	}
-	.resp-tab-item {
-		padding: 7px 7px;
-		margin: 0 0.5em 0;
-		font-size: 15px;
-	}
-	.numofppl {
-		width: 100%;
-	}
-}
- @media (max-width:384px){
-	h1 {
-		font-size: 32px;
-	}
-	h3 {
-		font-size: 15px;
-	}
-	.from, .to, .date, .depart, .return {
-		width: 100%;
-		float: left;
-		margin-bottom:25px;
-	}
-	.date{
-		margin-bottom:0;
-	}
-	.resp-tab-item {
-		padding: 7px 7px;
-		margin: 0 0em 0;
-		font-size: 15px;
-	}
-	.class {
-		width: 100%;
-		float: left;
-		margin-bottom: 40px;
-	}
-	input[type="text"] {
-		padding: 10px;
-		width: 91.5%;
-	}
-	input#datepicker, input#datepicker1, input#datepicker2, input#datepicker3 {
-		width: 91.5%;
-	}
-}
- @media (max-width:320px){
-	h1 {
-		font-size: 26px;
-		margin-top:25px;
-	}
-	form{
-		padding:15px;
-	}
-	.resp-tab-item {
-		padding: 7px 5px;
-		margin: 0 0em 0;
-		font-size: 14px;
-	}
-	.adults, .child {
-		width: 100%;
-		float: left;
-	}
-	.adults{
-		margin-bottom:25px;
-	}
-}
-@font-face {
-  font-family: 'product sans';
-  src: url('assets/css/Product Sans Bold.ttf');
-}
-h1 {
-	font-family: 'product sans';
-    /* font-style: italic; */
-    font-size: 40px !important;	
-}	
-</style>
-<?php
-    if(isset($_GET['error'])) {
-        if($_GET['error'] === 'sameval') {
-		  echo '<script>alert("Select different value for departure city and arrival city")</script>';
-      } else if($_GET['error'] === 'seldep') {
-          echo '<script>alert("Select Departure city")</script>';
-      } else if($_GET['error'] === 'selarr') {
-          echo"<script>alert('Select Arrival city')</script>";
-      }
+// Error handling
+$error_messages = [];
+if(isset($_GET['error'])) {
+    switch($_GET['error']) {
+        case 'sameval':
+            $error_messages[] = "Please select different departure and arrival cities";
+            break;
+        case 'seldep':
+            $error_messages[] = "Please select a departure city";
+            break;
+        case 'selarr':
+            $error_messages[] = "Please select an arrival city";
+            break;
+        case 'nodate':
+            $error_messages[] = "Please select a departure date";
+            break;
+        case 'pastdate':
+            $error_messages[] = "Departure date cannot be in the past";
+            break;
+        case 'futuredate':
+            $error_messages[] = "Departure date cannot be more than 1 year in the future";
+            break;
     }
-?>
-
-<link rel="stylesheet" type="text/css"
-        href="styles%2c_bootstrap4%2c_bootstrap.min.css%2bplugins%2c_font-awesome-4.7.0%2c_css%2c_font-awesome.min.css%2bplugins%2c_OwlCarousel2-2.2.1%2c_owl.carousel.css%2bplugins%2c_OwlCarousel2-2.2.1%2c_owl" />
-	<meta name="keywords" content="Flight Ticket Booking  Widget Responsive, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design" />
-	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } ;</script>	
-	<div class="main-agileinfo">
-		<h1 class="text-light brand mt-2">
-			<img src="assets/images/airtic.png" 
-				height="105px" width="105px" alt="">				
-		Online Flight Booking</h1>
-		<div class="sap_tabs">			
-			<div id="horizontalTab">
-				<ul class="resp-tabs-list">
-					<li class="resp-tab-item"><span>Two-way Trip</span></li>
-					<li class="resp-tab-item"><span>One-way Trip</span></li>
-				</ul>	
-				<div class="clearfix"> </div>	
-				<div class="resp-tabs-container">
-					<div class="tab-1 resp-tab-content roundtrip">
-						<form action="book_flight.php" method="post">
-							<input type="hidden" name="type" value="round">
-							<div class="from">
-								<h3 style="color: rgba(255, 255, 255, 0.767);">From</h3>
-								<?php
-								$sql = 'SELECT * FROM Cities ';
-								$stmt = mysqli_stmt_init($conn);
-								mysqli_stmt_prepare($stmt,$sql);         
-								mysqli_stmt_execute($stmt);          
-								$result = mysqli_stmt_get_result($stmt);    
-								echo '<select class="" name="dep_city" id="w3_country1">
-								<option value="0" selected disabled >Departure</option>';
-								while ($row = mysqli_fetch_assoc($result)) {
-								echo '<option value='. $row['city']  .'>'. 
-									$row['city'] .'</option>';
-								}
-								?>
-								</select>  
-							</div>
-							<div class="to">
-								<h3 style="color: rgba(255, 255, 255, 0.767);">To</h3>
-								<?php
-								$sql = 'SELECT * FROM Cities ';
-								$stmt = mysqli_stmt_init($conn);
-								mysqli_stmt_prepare($stmt,$sql);         
-								mysqli_stmt_execute($stmt);          
-								$result = mysqli_stmt_get_result($stmt);    
-								echo '<select value="0" name="arr_city" id="w3_country1">
-								<option selected disabled>Arrival</option>';
-								while ($row = mysqli_fetch_assoc($result)) {
-								echo '<option value='. $row['city']  .'>'. 
-									$row['city'] .'</option>';
-								}
-								?>
-								</select>							
-							</div>
-							<div class="clear"></div>
-							<div class="date">
-								<div class="depart">
-									<h3 style="color: rgba(255, 255, 255, 0.767);">Depart</h3>
-									<input class="form-control" name="dep_date" type="date"  onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'mm/dd/yyyy';}" required="">
-								</div>
-								<div class="return">
-									<h3 style="color: rgba(255, 255, 255, 0.767);">Return</h3>
-									<input class="form-control"  name="ret_date" type="date" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'mm/dd/yyyy';}" required="">
-								</div>
-								<div class="clear"></div>
-							</div>
-							<div class="class">
-								<h3 style="color: rgba(255, 255, 255, 0.767);">Class</h3>
-								<select id="w3_country1" 
-									name="f_class" onchange="change_country(this.value)" class="frm-field required">
-									<option value="E">Economy</option>  
-									<option value="B">Business</option>   
-								</select>
-
-							</div>
-							<div class="clear"></div>
-							<div class="numofppl">
-								<div class="adults">
-									<h3 style="color: rgba(255, 255, 255, 0.767);">Passenger</h3>
-									<div class="quantity"> 
-										<div class="quantity-select">                           
-											<div class="entry value-minus">&nbsp;</div>
-											<div class="entry value"><span>1</span></div>
-											<input type="hidden" name="passengers"
-												 class="input_val" value="1">
-											<div class="entry value-plus active">&nbsp;</div>
-										</div>
-									</div>
-								</div>
-								<div class="clear"></div>
-							</div>
-							<div class="clear"></div>
-							<input type="submit" value="Search Flights" name="search_but">
-						</form>						
-					</div>		
-					<div class="tab-1 resp-tab-content oneway">
-						<form action="book_flight.php" method="post">
-							<input type="hidden" name="type" value="one">
-							<div class="from">
-								<h3 style="color: rgba(255, 255, 255, 0.767);">From</h3>								
-								<?php
-								$sql = 'SELECT * FROM Cities ';
-								$stmt = mysqli_stmt_init($conn);
-								mysqli_stmt_prepare($stmt,$sql);         
-								mysqli_stmt_execute($stmt);          
-								$result = mysqli_stmt_get_result($stmt);    
-								echo '<select value="0" name="dep_city" id="w3_country1">
-								<option selected disabled>Departure</option>';
-								while ($row = mysqli_fetch_assoc($result)) {
-								echo '<option value='. $row['city']  .'>'. 
-									$row['city'] .'</option>';
-								}
-								?>
-								</select> 														
-							</div>
-							<div class="to">
-								<h3>To</h3>								
-								<?php
-								$sql = 'SELECT * FROM Cities ';
-								$stmt = mysqli_stmt_init($conn);
-								mysqli_stmt_prepare($stmt,$sql);         
-								mysqli_stmt_execute($stmt);          
-								$result = mysqli_stmt_get_result($stmt);    
-								echo '<select value="0" name="arr_city" id="w3_country1">
-								<option selected disabled>Arrival</option>';
-								while ($row = mysqli_fetch_assoc($result)) {
-								echo '<option value='. $row['city']  .'>'. 
-									$row['city'] .'</option>';
-								}
-								?>
-								</select>									
-							</div>
-							<div class="clear"></div>
-							<div class="date">
-								<div class="depart">
-									<h3 style="color: rgba(255, 255, 255, 0.767);">Depart</h3>
-									<input name="dep_date" type="date" 
-										class="form-control"  onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'mm/dd/yyyy';}" required="">
-								</div>
-							</div>
-							<div class="class">
-								<h3 style="color: rgba(255, 255, 255, 0.767);">Class</h3>
-								<select id="w3_country1" name="f_class"
-									onchange="change_country(this.value)" class="frm-field required">
-									<option value="E">Economy</option>  
-									<option value="B">Business</option>   
-								</select>
-
-							</div>
-							<div class="clear"></div>
-							<div class="numofppl">
-								<div class="adults">
-									<h3 style="color: rgba(255, 255, 255, 0.767);">Passenger</h3>
-									<div class="quantity"> 
-										<div class="quantity-select">                           
-											<div class="entry value-minus">&nbsp;</div>
-											<div class="entry value"><span>1</span></div>
-											<input type="hidden" name="passengers"
-												 class="input_val" value="1">											
-											<div class="entry value-plus active">&nbsp;</div>
-										</div>
-									</div>
-								</div>
-								<div class="clear"></div>
-							</div>
-							<div class="clear"></div>
-							<input type="submit" value="Search Flights" name="search_but">
-						</form>																				
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-<style>
-.intro{width:100%;background:#fff;z-index:1}
-.intro_background{top:-128px;left:0;width:100%;height:20px;background-repeat:no-repeat;background-size:cover;background-position:center center}
-.intro_container{width:100%;border-bottom:solid 2px #e4e6e8;padding-top:142px;padding-bottom:121px}
-.intro_icon{width:70px;height:71px}
-.intro_icon img{max-width:100%}
-.intro_content{padding-left:28px}
-.intro_title{font-family:'Oswald',sans-serif;font-size:18px;color:#181818;font-weight:400}
-.destinations{width:100%;background:#fff;padding-top:115px;padding-bottom:116px}
-
-div.card {
-  -webkit-transition: 0.4s ease;
-  transition: 0.4s ease;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  
 }
+?> 
 
-.col-lg-6:hover div.card {
-  -webkit-transform: scale(1.08);
-  transform: scale(0.89);
-}
-/* .card {
-  width: 100%;
-  height:200px;
-  border-top-left-radius:2px;
-  border-top-right-radius:2px;
-  display:block;
-    overflow: hidden;
-} */
-.card img{
-  width: 100%;
-  height: 370px;
-  object-fit:cover; 
-  transition: all .25s ease;
-} 
-
-</style>
-<div class="conatiner-fluid p-4" style="background-color: whitesmoke;margin-top:150px;">
-   <!-- <h2 class="text-center mb-3 mt-3 display-4"
-	   style="font-style: normal;font-size:80px;">Main Attractions In India</h2>   
-	<div class="row p-5 pb-0"> -->
-
-<!-- Intro -->
-<div class="intro">
-            <div class="intro_background" style="background-image:url(images/intro.png)"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <div class="intro_container">
-                            <div class="row">
-                                <!-- Intro Item -->
-                                <div class="col-lg-4  intro_col">
-                                    <div class="intro_item d-flex flex-row align-items-end justify-content-start">
-                                        <div class="intro_icon"><img src="assets/images/beach.svg" alt=""></div>
-                                        <div class="intro_content">
-                                            <div class="intro_title">Top Destinations</div>
-                                            <div class="intro_subtitle">
-                                                <p>What's on your travel bucket list?</p>
-                                            </div>
-                                        </div>
-                                    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book flights with AirTic - Your trusted flight booking partner for 2026">
+    <meta name="keywords" content="flights, booking, travel, airtic, 2026">
+    <title>AirTic 2026 - Online Flight Booking</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3a0ca3;
+        --accent-color: #4cc9f0;
+        --success-color: #4ade80;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --dark-color: #1e293b;
+        --light-color: #f8fafc;
+        --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, #7209b7 100%);
+    }
+    
+    @font-face {
+        font-family: 'product sans';
+        src: url('assets/css/Product Sans Bold.ttf');
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.9)), 
+                    url('assets/images/plane1.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: var(--light-color);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+    }
+    
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1400px;
+        width: 100%;
+    }
+    
+    .brand-header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: fadeInDown 1s ease;
+    }
+    
+    .brand-logo {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .brand-title {
+        font-family: 'product sans', 'Montserrat', sans-serif;
+        font-size: 4rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff 0%, #4cc9f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .brand-subtitle {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    /* Search Container */
+    .search-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        margin-bottom: 60px;
+        animation: fadeInUp 1s ease 0.3s both;
+    }
+    
+    /* Tab Navigation */
+    .booking-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 40px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 20px;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        padding: 18px 25px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .tab-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    .tab-btn.active {
+        background: var(--gradient-primary);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+    }
+    
+    /* Form Styles */
+    .booking-form {
+        display: none;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    .booking-form.active {
+        display: block;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .form-group {
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+    }
+    
+    .form-icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--accent-color);
+        font-size: 1.2rem;
+        z-index: 2;
+    }
+    
+    .form-select, .form-input, .form-date {
+        width: 100%;
+        padding: 18px 20px 18px 55px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        color: white;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+        appearance: none;
+        cursor: pointer;
+    }
+    
+    .form-select:focus, .form-input:focus, .form-date:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.1);
+        background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .form-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234cc9f0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 20px center;
+        background-size: 16px;
+    }
+    
+    .form-date::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.7;
+        cursor: pointer;
+    }
+    
+    .passenger-selector {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .passenger-controls {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .passenger-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .passenger-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: var(--accent-color);
+    }
+    
+    .passenger-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+    
+    .passenger-count {
+        font-size: 2rem;
+        font-weight: 700;
+        min-width: 60px;
+        text-align: center;
+        color: white;
+    }
+    
+    .passenger-label {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .class-selector {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .class-option {
+        flex: 1;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .class-option:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-3px);
+    }
+    
+    .class-option.selected {
+        background: var(--gradient-primary);
+        border-color: var(--primary-color);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+    }
+    
+    .class-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+    
+    .class-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+    
+    .class-price {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    .search-btn {
+        background: var(--gradient-accent);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 20px 40px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    .search-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(76, 201, 240, 0.3);
+    }
+    
+    .search-btn:active {
+        transform: translateY(-1px);
+    }
+    
+    /* Features Section */
+    .features-section {
+        padding: 80px 20px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        position: relative;
+    }
+    
+    .section-title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 60px;
+        background: linear-gradient(135deg, #fff 0%, #4cc9f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .feature-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--gradient-primary);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .feature-icon {
+        font-size: 3.5rem;
+        margin-bottom: 25px;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .feature-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: white;
+    }
+    
+    .feature-desc {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+    
+    /* Error Display */
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+    }
+    
+    .alert-custom {
+        background: rgba(239, 68, 68, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        color: white;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        animation: slideInRight 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .alert-custom i {
+        font-size: 1.2rem;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .brand-title {
+            font-size: 3rem;
+        }
+        
+        .search-container {
+            padding: 30px;
+        }
+        
+        .features-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .brand-title {
+            font-size: 2.5rem;
+        }
+        
+        .brand-logo {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .search-container {
+            padding: 20px;
+        }
+        
+        .tab-btn {
+            padding: 15px;
+            font-size: 1rem;
+        }
+        
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .hero-section {
+            padding: 10px;
+        }
+        
+        .brand-title {
+            font-size: 2rem;
+        }
+        
+        .brand-subtitle {
+            font-size: 1rem;
+        }
+        
+        .tab-btn {
+            font-size: 0.9rem;
+            padding: 12px;
+        }
+        
+        .class-selector {
+            flex-direction: column;
+        }
+        
+        .feature-card {
+            padding: 30px 20px;
+        }
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    </style>
+</head>
+<body>
+    <!-- Error Messages -->
+    <?php if (!empty($error_messages)): ?>
+    <div class="alert-container">
+        <?php foreach ($error_messages as $error): ?>
+        <div class="alert-custom">
+            <i class="fas fa-exclamation-circle"></i>
+            <span><?php echo htmlspecialchars($error); ?></span>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <!-- Brand Header -->
+            <div class="brand-header">
+                <img src="assets/images/airtic.png" alt="AirTic Logo" class="brand-logo">
+                <h1 class="brand-title">AirTic 2026</h1>
+                <p class="brand-subtitle">Your gateway to seamless air travel experiences. Book smarter, fly better.</p>
+            </div>
+            
+            <!-- Search Container -->
+            <div class="search-container">
+                <!-- Tab Navigation -->
+                <div class="booking-tabs">
+                    <button class="tab-btn active" data-tab="roundtrip">
+                        <i class="fas fa-exchange-alt"></i> Round Trip
+                    </button>
+                    <button class="tab-btn" data-tab="oneway">
+                        <i class="fas fa-long-arrow-alt-right"></i> One Way
+                    </button>
+                    <button class="tab-btn" data-tab="multicity">
+                        <i class="fas fa-map-marked-alt"></i> Multi-City
+                    </button>
+                </div>
+                
+                <!-- Round Trip Form -->
+                <form action="book_flight.php" method="post" class="booking-form active" id="roundtrip">
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <input type="hidden" name="type" value="round">
+                    
+                    <div class="form-grid">
+                        <!-- Departure City -->
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-plane-departure me-2"></i> From</label>
+                            <i class="form-icon fas fa-map-marker-alt"></i>
+                            <select class="form-select" name="dep_city" required>
+                                <option value="0" selected disabled>Select departure city</option>
+                                <?php
+                                $sql = 'SELECT * FROM Cities ORDER BY city ASC';
+                                $stmt = mysqli_stmt_init($conn);
+                                mysqli_stmt_prepare($stmt, $sql);         
+                                mysqli_stmt_execute($stmt);          
+                                $result = mysqli_stmt_get_result($stmt);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        
+                        <!-- Arrival City -->
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-plane-arrival me-2"></i> To</label>
+                            <i class="form-icon fas fa-map-marker-alt"></i>
+                            <select class="form-select" name="arr_city" required>
+                                <option value="0" selected disabled>Select arrival city</option>
+                                <?php
+                                mysqli_data_seek($result, 0);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        
+                        <!-- Departure Date -->
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-calendar-alt me-2"></i> Depart Date</label>
+                            <i class="form-icon fas fa-calendar"></i>
+                            <input type="date" class="form-date" name="dep_date" required 
+                                   min="<?php echo date('Y-m-d'); ?>" 
+                                   max="<?php echo date('Y-m-d', strtotime('+1 year')); ?>">
+                        </div>
+                        
+                        <!-- Return Date -->
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-calendar-alt me-2"></i> Return Date</label>
+                            <i class="form-icon fas fa-calendar"></i>
+                            <input type="date" class="form-date" name="ret_date" required 
+                                   min="<?php echo date('Y-m-d'); ?>" 
+                                   max="<?php echo date('Y-m-d', strtotime('+1 year')); ?>">
+                        </div>
+                    </div>
+                    
+                    <!-- Passenger Selector -->
+                    <div class="passenger-selector">
+                        <label class="form-label mb-3"><i class="fas fa-users me-2"></i> Passengers</label>
+                        <div class="passenger-controls">
+                            <button type="button" class="passenger-btn" id="passenger-minus">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="passenger-count" id="passenger-display">1</div>
+                            <input type="hidden" name="passengers" id="passengers" value="1">
+                            <button type="button" class="passenger-btn" id="passenger-plus">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <span class="passenger-label">Traveler(s)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Class Selector -->
+                    <div class="class-selector">
+                        <div class="class-option selected" data-class="E">
+                            <i class="class-icon fas fa-chair"></i>
+                            <div class="class-name">Economy</div>
+                            <div class="class-price">Best Price</div>
+                        </div>
+                        <div class="class-option" data-class="B">
+                            <i class="class-icon fas fa-crown"></i>
+                            <div class="class-name">Business</div>
+                            <div class="class-price">Extra Comfort</div>
+                        </div>
+                        <div class="class-option" data-class="F">
+                            <i class="class-icon fas fa-star"></i>
+                            <div class="class-name">First Class</div>
+                            <div class="class-price">Luxury Experience</div>
+                        </div>
+                        <input type="hidden" name="f_class" id="f_class" value="E">
+                    </div>
+                    
+                    <button type="submit" name="search_but" class="search-btn">
+                        <i class="fas fa-search me-2"></i> Search Flights
+                    </button>
+                </form>
+                
+                <!-- One Way Form -->
+                <form action="book_flight.php" method="post" class="booking-form" id="oneway">
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <input type="hidden" name="type" value="one">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-plane-departure me-2"></i> From</label>
+                            <i class="form-icon fas fa-map-marker-alt"></i>
+                            <select class="form-select" name="dep_city" required>
+                                <option value="0" selected disabled>Select departure city</option>
+                                <?php
+                                mysqli_data_seek($result, 0);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-plane-arrival me-2"></i> To</label>
+                            <i class="form-icon fas fa-map-marker-alt"></i>
+                            <select class="form-select" name="arr_city" required>
+                                <option value="0" selected disabled>Select arrival city</option>
+                                <?php
+                                mysqli_data_seek($result, 0);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-calendar-alt me-2"></i> Depart Date</label>
+                            <i class="form-icon fas fa-calendar"></i>
+                            <input type="date" class="form-date" name="dep_date" required 
+                                   min="<?php echo date('Y-m-d'); ?>" 
+                                   max="<?php echo date('Y-m-d', strtotime('+1 year')); ?>">
+                        </div>
+                    </div>
+                    
+                    <div class="passenger-selector">
+                        <label class="form-label mb-3"><i class="fas fa-users me-2"></i> Passengers</label>
+                        <div class="passenger-controls">
+                            <button type="button" class="passenger-btn passenger-minus-one">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="passenger-count passenger-display-one">1</div>
+                            <input type="hidden" name="passengers" class="passengers-one" value="1">
+                            <button type="button" class="passenger-btn passenger-plus-one">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <span class="passenger-label">Traveler(s)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="class-selector">
+                        <div class="class-option selected" data-class-one="E">
+                            <i class="class-icon fas fa-chair"></i>
+                            <div class="class-name">Economy</div>
+                            <div class="class-price">Best Price</div>
+                        </div>
+                        <div class="class-option" data-class-one="B">
+                            <i class="class-icon fas fa-crown"></i>
+                            <div class="class-name">Business</div>
+                            <div class="class-price">Extra Comfort</div>
+                        </div>
+                        <div class="class-option" data-class-one="F">
+                            <i class="class-icon fas fa-star"></i>
+                            <div class="class-name">First Class</div>
+                            <div class="class-price">Luxury Experience</div>
+                        </div>
+                        <input type="hidden" name="f_class" class="f_class_one" value="E">
+                    </div>
+                    
+                    <button type="submit" name="search_but" class="search-btn">
+                        <i class="fas fa-search me-2"></i> Search Flights
+                    </button>
+                </form>
+                
+                <!-- Multi-City Form -->
+                <form action="book_flight.php" method="post" class="booking-form" id="multicity">
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <input type="hidden" name="type" value="multi">
+                    <div id="multi-city-container">
+                        <!-- Multi-city segments will be added here -->
+                        <div class="multi-city-segment">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">From</label>
+                                    <i class="form-icon fas fa-map-marker-alt"></i>
+                                    <select class="form-select" name="dep_city_multi[]" required>
+                                        <option value="0" selected disabled>Select city</option>
+                                        <?php
+                                        mysqli_data_seek($result, 0);
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
-                                <!-- Intro Item -->
-                                <div class="col-lg-4 intro_col">
-                                    <div class="intro_item d-flex flex-row align-items-end justify-content-start">
-                                        <div class="intro_icon"><img src="assets/images/wallet.svg" alt=""></div>
-                                        <div class="intro_content">
-                                            <div class="intro_title">The Best Prices</div>
-                                            <div class="intro_subtitle">
-                                                <p>Visit your favourite places at a reasonable price</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="form-label">To</label>
+                                    <i class="form-icon fas fa-map-marker-alt"></i>
+                                    <select class="form-select" name="arr_city_multi[]" required>
+                                        <option value="0" selected disabled>Select city</option>
+                                        <?php
+                                        mysqli_data_seek($result, 0);
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
-                                <!-- Intro Item -->
-                                <div class="col-lg-4 intro_col">
-                                    <div class="intro_item d-flex flex-row align-items-end justify-content-start">
-                                        <div class="intro_icon"><img src="assets/images/suitcase.svg" alt=""></div>
-                                        <div class="intro_content">
-                                            <div class="intro_title">Amazing Services</div>
-                                            <div class="intro_subtitle">
-                                                <p>Great interactions begin with knowing your customers wants and needs.</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <i class="form-icon fas fa-calendar"></i>
+                                    <input type="date" class="form-date" name="date_multi[]" required 
+                                           min="<?php echo date('Y-m-d'); ?>" 
+                                           max="<?php echo date('Y-m-d', strtotime('+1 year')); ?>">
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <button type="button" class="btn btn-outline-light mb-4" id="add-segment">
+                        <i class="fas fa-plus me-2"></i> Add Another Flight
+                    </button>
+                    
+                    <div class="passenger-selector">
+                        <label class="form-label mb-3"><i class="fas fa-users me-2"></i> Passengers</label>
+                        <div class="passenger-controls">
+                            <button type="button" class="passenger-btn passenger-minus-multi">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="passenger-count passenger-display-multi">1</div>
+                            <input type="hidden" name="passengers" class="passengers-multi" value="1">
+                            <button type="button" class="passenger-btn passenger-plus-multi">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <span class="passenger-label">Traveler(s)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="class-selector">
+                        <div class="class-option selected" data-class-multi="E">
+                            <i class="class-icon fas fa-chair"></i>
+                            <div class="class-name">Economy</div>
+                            <div class="class-price">Best Price</div>
+                        </div>
+                        <div class="class-option" data-class-multi="B">
+                            <i class="class-icon fas fa-crown"></i>
+                            <div class="class-name">Business</div>
+                            <div class="class-price">Extra Comfort</div>
+                        </div>
+                        <div class="class-option" data-class-multi="F">
+                            <i class="class-icon fas fa-star"></i>
+                            <div class="class-name">First Class</div>
+                            <div class="class-price">Luxury Experience</div>
+                        </div>
+                        <input type="hidden" name="f_class" class="f_class_multi" value="E">
+                    </div>
+                    
+                    <button type="submit" name="search_but" class="search-btn">
+                        <i class="fas fa-search me-2"></i> Search Multi-City Flights
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose AirTic 2026?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="feature-icon fas fa-bolt"></i>
+                    <h3 class="feature-title">Lightning Fast Booking</h3>
+                    <p class="feature-desc">Book flights in under 60 seconds with our streamlined process and AI-powered search.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="feature-icon fas fa-shield-alt"></i>
+                    <h3 class="feature-title">Secure & Protected</h3>
+                    <p class="feature-desc">Your data is protected with military-grade encryption and GDPR compliance.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="feature-icon fas fa-percentage"></i>
+                    <h3 class="feature-title">Best Price Guarantee</h3>
+                    <p class="feature-desc">Find the lowest fares with our price comparison technology across 500+ airlines.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="feature-icon fas fa-headset"></i>
+                    <h3 class="feature-title">24/7 Support</h3>
+                    <p class="feature-desc">Round-the-clock customer support via chat, phone, and email in multiple languages.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="feature-icon fas fa-leaf"></i>
+                    <h3 class="feature-title">Eco-Friendly Travel</h3>
+                    <p class="feature-desc">Offset your carbon footprint with our sustainable travel options.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="feature-icon fas fa-mobile-alt"></i>
+                    <h3 class="feature-title">Mobile First</h3>
+                    <p class="feature-desc">Seamless experience across all devices with our progressive web app.</p>
                 </div>
             </div>
-			</div>
-<!-- <div class="conatiner-fluid p-4" style="background-color: whitesmoke;margin-top:150px;"> -->
- 
-	</div>
-	<footer class="mt-5">
-	<em><h5 class="text-light text-center p-0 brand mt-2">
-				<img src="assets/images/airtic.png" 
-					height="40px" width="40px" alt="">				
-			Online Flight Booking</h5></em>
-	<div class="text-light text-center">&copy; <?php echo date('Y')?> - Developed By KelvinMutuku<br><br></div>
-	<!-- <p>----------</p> -->
-	
-	</footer>	
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-5" style="background: rgba(0, 0, 0, 0.8);">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="assets/images/airtic.png" alt="AirTic Logo" height="50" class="me-3">
+                        <h4 class="mb-0" style="font-family: 'product sans';">AirTic 2026</h4>
+                    </div>
+                    <p class="text-muted">Redefining air travel with innovation, security, and exceptional service.</p>
+                    <div class="social-icons mt-3">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 col-6 mb-4">
+                    <h5 class="mb-3">Company</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="about.php" class="text-muted text-decoration-none">About Us</a></li>
+                        <li><a href="careers.php" class="text-muted text-decoration-none">Careers</a></li>
+                        <li><a href="press.php" class="text-muted text-decoration-none">Press</a></li>
+                        <li><a href="blog.php" class="text-muted text-decoration-none">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-6 mb-4">
+                    <h5 class="mb-3">Support</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="help.php" class="text-muted text-decoration-none">Help Center</a></li>
+                        <li><a href="contact.php" class="text-muted text-decoration-none">Contact Us</a></li>
+                        <li><a href="faq.php" class="text-muted text-decoration-none">FAQ</a></li>
+                        <li><a href="feedback.php" class="text-muted text-decoration-none">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-6 mb-4">
+                    <h5 class="mb-3">Legal</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="privacy.php" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                        <li><a href="terms.php" class="text-muted text-decoration-none">Terms of Service</a></li>
+                        <li><a href="cookies.php" class="text-muted text-decoration-none">Cookie Policy</a></li>
+                        <li><a href="accessibility.php" class="text-muted text-decoration-none">Accessibility</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-6 mb-4">
+                    <h5 class="mb-3">Download</h5>
+                    <div class="app-buttons">
+                        <a href="#" class="d-block mb-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" height="40">
+                        </a>
+                        <a href="#" class="d-block">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" height="40">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">
+                        &copy; 2024-2026 AirTic Flight Booking System. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted mb-0">
+                        Developed with <i class="fas fa-heart text-danger"></i> by MD TAJUL ISLAM
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <?php subview('footer.php'); ?> 
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Tab Switching
+        $('.tab-btn').on('click', function() {
+            const tabId = $(this).data('tab');
+            
+            // Update active tab button
+            $('.tab-btn').removeClass('active');
+            $(this).addClass('active');
+            
+            // Show corresponding form
+            $('.booking-form').removeClass('active');
+            $('#' + tabId).addClass('active');
+        });
+        
+        // Passenger Counter for Round Trip
+        let passengerCount = 1;
+        const maxPassengers = 9;
+        const minPassengers = 1;
+        
+        $('#passenger-plus').on('click', function() {
+            if (passengerCount < maxPassengers) {
+                passengerCount++;
+                updatePassengerDisplay();
+            }
+        });
+        
+        $('#passenger-minus').on('click', function() {
+            if (passengerCount > minPassengers) {
+                passengerCount--;
+                updatePassengerDisplay();
+            }
+        });
+        
+        function updatePassengerDisplay() {
+            $('#passenger-display').text(passengerCount);
+            $('#passengers').val(passengerCount);
+            
+            // Update button states
+            $('#passenger-minus').prop('disabled', passengerCount <= minPassengers);
+            $('#passenger-plus').prop('disabled', passengerCount >= maxPassengers);
+        }
+        
+        // Passenger Counter for One Way
+        $('.passenger-plus-one').on('click', function() {
+            let count = parseInt($('.passenger-display-one').text());
+            if (count < maxPassengers) {
+                count++;
+                $('.passenger-display-one').text(count);
+                $('.passengers-one').val(count);
+            }
+        });
+        
+        $('.passenger-minus-one').on('click', function() {
+            let count = parseInt($('.passenger-display-one').text());
+            if (count > minPassengers) {
+                count--;
+                $('.passenger-display-one').text(count);
+                $('.passengers-one').val(count);
+            }
+        });
+        
+        // Passenger Counter for Multi-City
+        $('.passenger-plus-multi').on('click', function() {
+            let count = parseInt($('.passenger-display-multi').text());
+            if (count < maxPassengers) {
+                count++;
+                $('.passenger-display-multi').text(count);
+                $('.passengers-multi').val(count);
+            }
+        });
+        
+        $('.passenger-minus-multi').on('click', function() {
+            let count = parseInt($('.passenger-display-multi').text());
+            if (count > minPassengers) {
+                count--;
+                $('.passenger-display-multi').text(count);
+                $('.passengers-multi').val(count);
+            }
+        });
+        
+        // Class Selection
+        $('.class-option').on('click', function() {
+            const formType = $(this).closest('form').attr('id');
+            const selectedClass = $(this).data('class') || $(this).data('class-one') || $(this).data('class-multi');
+            
+            // Update UI
+            $(this).closest('.class-selector').find('.class-option').removeClass('selected');
+            $(this).addClass('selected');
+            
+            // Update hidden input
+            if (formType === 'roundtrip') {
+                $('#f_class').val(selectedClass);
+            } else if (formType === 'oneway') {
+                $('.f_class_one').val(selectedClass);
+            } else {
+                $('.f_class_multi').val(selectedClass);
+            }
+        });
+        
+        // Add multi-city segment
+        let segmentCount = 1;
+        $('#add-segment').on('click', function() {
+            if (segmentCount < 5) {
+                segmentCount++;
+                const newSegment = `
+                <div class="multi-city-segment mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0">Flight Segment ${segmentCount}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-segment">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">From</label>
+                            <i class="form-icon fas fa-map-marker-alt"></i>
+                            <select class="form-select" name="dep_city_multi[]" required>
+                                <option value="0" selected disabled>Select city</option>
+                                <?php
+                                mysqli_data_seek($result, 0);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">To</label>
+                            <i class="form-icon fas fa-map-marker-alt"></i>
+                            <select class="form-select" name="arr_city_multi[]" required>
+                                <option value="0" selected disabled>Select city</option>
+                                <?php
+                                mysqli_data_seek($result, 0);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.htmlspecialchars($row['city']).'">'.htmlspecialchars($row['city']).'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <i class="form-icon fas fa-calendar"></i>
+                            <input type="date" class="form-date" name="date_multi[]" required 
+                                   min="<?php echo date('Y-m-d'); ?>" 
+                                   max="<?php echo date('Y-m-d', strtotime('+1 year')); ?>">
+                        </div>
+                    </div>
+                </div>
+                `;
+                $('#multi-city-container').append(newSegment);
+                
+                // Update date min values for new segments
+                updateDateMins();
+            } else {
+                alert('Maximum 5 flight segments allowed.');
+            }
+        });
+        
+        // Remove multi-city segment
+        $(document).on('click', '.remove-segment', function() {
+            if ($('.multi-city-segment').length > 1) {
+                $(this).closest('.multi-city-segment').remove();
+                segmentCount--;
+                // Renumber segments
+                $('.multi-city-segment').each(function(index) {
+                    $(this).find('h6').text(`Flight Segment ${index + 1}`);
+                });
+            }
+        });
+        
+        // Date validation
+        function updateDateMins() {
+            const today = new Date().toISOString().split('T')[0];
+            const maxDate = new Date();
+            maxDate.setFullYear(maxDate.getFullYear() + 1);
+            const maxDateStr = maxDate.toISOString().split('T')[0];
+            
+            $('input[type="date"]').each(function() {
+                $(this).attr('min', today);
+                $(this).attr('max', maxDateStr);
+            });
+        }
+        
+        // Initialize date restrictions
+        updateDateMins();
+        
+        // Form validation
+        $('form').on('submit', function(e) {
+            const depCity = $(this).find('select[name*="dep_city"]').val();
+            const arrCity = $(this).find('select[name*="arr_city"]').val();
+            
+            if (depCity === '0' || depCity === null) {
+                e.preventDefault();
+                showError('Please select a departure city');
+                return;
+            }
+            
+            if (arrCity === '0' || arrCity === null) {
+                e.preventDefault();
+                showError('Please select an arrival city');
+                return;
+            }
+            
+            if (depCity === arrCity) {
+                e.preventDefault();
+                showError('Departure and arrival cities cannot be the same');
+                return;
+            }
+        });
+        
+        // Error display function
+        function showError(message) {
+            // Remove existing error alerts
+            $('.alert-custom').remove();
+            
+            // Create new error alert
+            const alertDiv = $(`
+                <div class="alert-custom">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `);
+            
+            // Add to container
+            $('.alert-container').append(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+        
+        // Auto-hide existing alerts
+        setTimeout(() => {
+            $('.alert-custom').remove();
+        }, 5000);
+        
+        // Animate elements on scroll
+        function animateOnScroll() {
+            const features = document.querySelectorAll('.feature-card');
+            
+            features.forEach((feature, index) => {
+                const featurePosition = feature.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if (featurePosition < screenPosition) {
+                    setTimeout(() => {
+                        feature.style.opacity = '1';
+                        feature.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }
+        
+        // Set initial styles for animation
+        $('.feature-card').css({
+            opacity: '0',
+            transform: 'translateY(20px)',
+            transition: 'opacity 0.5s ease, transform 0.5s ease'
+        });
+        
+        // Trigger animation on load and scroll
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Set today as default for departure date
+        const today = new Date().toISOString().split('T')[0];
+        $('input[name="dep_date"]').val(today);
+        
+        // Set tomorrow as default for return date
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        $('input[name="ret_date"]').val(tomorrow.toISOString().split('T')[0]);
+    });
+    </script>
+</body>
+</html>
 
-		<script src="assets/js/easyResponsiveTabs.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			$(document).ready(function () {
-				$('#horizontalTab').easyResponsiveTabs({
-					type: 'default',         
-					width: 'auto', 
-					fit: true   
-				});
-			});		
-		</script>
-		<script>
-		$('.value-plus').on('click', function(){
-			var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)+1;
-			divUpd.text(newVal);
-			$('.input_val').val(newVal);
-		});
-
-		$('.value-minus').on('click', function(){
-			var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10)-1;
-			if(newVal>=1) {
-				divUpd.text(newVal);
-				$('.input_val').val(newVal);
-			} 
-		});
-		</script>
-								<!--//quantity-->
-						<!--load more-->
-		<script>
-	$(document).ready(function () {
-		size_li = $("#myList li").size();
-		x=1;
-		$('#myList li:lt('+x+')').show();
-		$('#loadMore').click(function () {
-			x= (x+1 <= size_li) ? x+1 : size_li;
-			$('#myList li:lt('+x+')').show();
-		});
-		$('#showLess').click(function () {
-			x=(x-1<0) ? 1 : x-1;
-			$('#myList li').not(':lt('+x+')').hide();
-		});
-	});
-</script>
+<?php subview('footer.php'); ?>
