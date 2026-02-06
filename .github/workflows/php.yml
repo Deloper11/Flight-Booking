@@ -37,3 +37,32 @@ jobs:
 
     # - name: Run test suite
     #   run: composer run-script test
+APP_KEY=base64:yBeGmFjFww4QbNfYwJOuzvZitBd5alz2JcbOhOJXkjg=
+
+
+APP_NAME="Flight-Booking"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL="https://flight-booking-main-3qh1uk-admin.laravel.cloud"
+
+LOG_CHANNEL=laravel-cloud-socket
+LOG_STDERR_FORMATTER=Monolog\Formatter\JsonFormatter
+
+DB_CONNECTION=mysql
+DB_HOST=db-a10435c8-0b18-4c41-9810-494b3e67dfb5.us-east-2.db.laravel.cloud
+DB_PORT=3306
+DB_DATABASE=main
+DB_USERNAME=msiqn3za0zvdqvko
+DB_PASSWORD=Pwik8WVQ4bPH47cS1ZfO
+
+SESSION_DRIVER=cookie
+
+CACHE_STORE=database
+SCHEDULE_CACHE_DRIVER=database
+
+VITE_APP_NAME="${etatourtravel}"
+DB_CONNECTION=mysql
+DB_HOST=db-a10435c8-0b18-4c41-9810-494b3e67dfb5.us-east-2.public.db.laravel.cloud
+DB_PORT=3306
+DB_USERNAME=msiqn3za0zvdqvko
+DB_PASSWORD=Pwik8WVQ4bPH47cS1ZfO
