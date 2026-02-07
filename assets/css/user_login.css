@@ -1,132 +1,775 @@
-.flex-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding-left: 10px;
-    padding-right: 10px;
+/* ============================================
+   USER LOGIN INTERFACE - 2026 EDITION
+   Neural Network Inspired, Quantum Design System
+   ============================================ */
+
+:root {
+    --quantum-primary: linear-gradient(135deg, #00D4FF 0%, #0093E9 50%, #667EEA 100%);
+    --quantum-secondary: linear-gradient(135deg, #FF6B6B 0%, #FFA36C 50%, #FFD166 100%);
+    --neural-bg: rgba(255, 255, 255, 0.03);
+    --neural-border: rgba(255, 255, 255, 0.1);
+    --neural-glow: rgba(0, 212, 255, 0.3);
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-tertiary: rgba(255, 255, 255, 0.5);
+    --shadow-hologram: 0 0 40px rgba(0, 212, 255, 0.1);
+    --shadow-quantum: 0 20px 80px rgba(0, 147, 233, 0.3);
+    --shadow-neural: 0 10px 40px rgba(0, 0, 0, 0.3);
+    --radius-sm: 16px;
+    --radius-md: 32px;
+    --radius-lg: 64px;
+    --radius-xl: 128px;
+    --transition-quantum: 400ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    --transition-neural: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-hologram: 800ms linear;
 }
 
-.login-form {
-    margin-top: 20px;
-    margin-left: 40px;
-    width: 400px;
-    height: 510px;
-    background:rgba(0,0,0,0.2);
-    border-radius: 40px;
-    margin-bottom: 5px;
-
+/* Quantum Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-.form-input {
-    border: 0px;
-    border-bottom: 1px solid black;
-    margin-left: 8px;
-    margin-top: 20px;
-}
-
-i {
-    margin-top: 29px;
-    height: 30%;
-}
-
-h1 {
-    text-align: center;
-    font-family: 'Italianno', cursive;
-    font-weight: normal;
-    font-size: 110px;
-    margin: 0px;
-}
-
-a:hover {
-    text-decoration: none;
-}
-
-a {
-    text-decoration: none;
-    color: #4169E1;
-}
-
-input {
-    margin: 0px;
-    padding: 0px;
-}
-
-.text {
-    margin-top: 20px;
-    font-size: 18px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-#reset-pass {
-    margin-top: 5px;
-    float: right;
-    width: 40%;
-    margin-right: 40px;
+html {
+    height: 100%;
+    overflow-x: hidden;
 }
 
 body {
-    /* margin-top: 70px; */
-    background: linear-gradient(to left, #000000, #434343);
-    /* background-color: red; */
-    background-image: url(../images/Capture.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 100%;
-
-}
-
-@media screen and (max-width: 900px){
-	#image{
-		display: none;
-	}
-    .login-form {
-        margin-left: 0px;
-    }
-    body {
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-}
-
-input:focus,
-button:focus {
-    outline: none;
-}
-
-.submit {
+    min-height: 100vh;
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 40%),
+        linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%),
+        url(../images/Capture.png) center/cover no-repeat;
+    background-blend-mode: overlay, overlay, normal, luminosity;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    color: var(--text-primary);
+    position: relative;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Neural Network Background Animation */
+.neural-network {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.2;
+}
+
+.neural-path {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, var(--neural-glow), transparent);
+    height: 1px;
+    transform-origin: left;
+    animation: neuralPulse 3s infinite;
+}
+
+@keyframes neuralPulse {
+    0%, 100% {
+        opacity: 0.2;
+        transform: scaleX(0.5);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scaleX(1);
+    }
+}
+
+/* Quantum Flex Container */
+.flex-container {
+    display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    animation: quantumEntrance 1.2s var(--transition-neural);
 }
 
-.button {
-    background-color: #4169E1;
-    color: white;
-    width: 210px ;
-    margin-top: 20px;
-    border: #4169E1;
-    border-radius: 40px;
-    padding: 10px 25px;
+@keyframes quantumEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Holographic Login Interface */
+.login-form {
+    background: var(--neural-bg);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--neural-border);
+    border-radius: var(--radius-lg);
+    padding: 60px 48px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        var(--shadow-hologram),
+        var(--shadow-quantum),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: all var(--transition-quantum);
+}
+
+.login-form::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--quantum-primary);
+    opacity: 0.05;
+    z-index: -1;
+    border-radius: inherit;
+}
+
+.login-form::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(from 0deg, #00D4FF, #0093E9, #667EEA, #00D4FF);
+    border-radius: inherit;
+    z-index: -2;
+    opacity: 0;
+    animation: hologramRotate 4s linear infinite paused;
+    transition: opacity var(--transition-quantum);
+}
+
+.login-form:hover::after {
+    opacity: 0.3;
+    animation-play-state: running;
+}
+
+@keyframes hologramRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Quantum Header */
+.form-header {
     text-align: center;
-    font-size: 16px;
+    margin-bottom: 48px;
+    position: relative;
+}
+
+h1 {
+    font-family: 'Orbitron', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 4.5rem;
+    margin: 0 0 24px 0;
+    background: var(--quantum-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+    position: relative;
+    text-transform: uppercase;
+    text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+h1::before {
+    content: '>';
+    position: absolute;
+    left: -40px;
+    color: #00D4FF;
+    animation: cursorBlink 1s infinite;
+}
+
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 320px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.subtitle::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--quantum-primary);
+    margin: 20px auto 0;
+    border-radius: 1px;
+}
+
+/* Quantum Form Groups */
+.form-group {
+    position: relative;
+    margin-bottom: 40px;
+    z-index: 1;
+}
+
+.input-container {
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all var(--transition-quantum);
+}
+
+.input-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform var(--transition-hologram);
+}
+
+.input-container:focus-within::before {
+    transform: translateX(100%);
+}
+
+.form-input {
+    width: 100%;
+    padding: 24px 32px;
+    padding-left: 64px;
+    font-size: 1.125rem;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.02em;
+    transition: all var(--transition-quantum);
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+.form-input::placeholder {
+    color: var(--text-tertiary);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+}
+
+.form-input:focus {
+    color: #00D4FF;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.input-icon {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    font-size: 1.5rem;
+    transition: all var(--transition-quantum);
+    z-index: 2;
+}
+
+.input-container:focus-within .input-icon {
+    color: #00D4FF;
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* Quantum Password Toggle */
+.password-toggle {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-tertiary);
     cursor: pointer;
+    font-size: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-quantum);
+    z-index: 2;
+    backdrop-filter: blur(10px);
 }
 
-.button:hover {
-    background-color: #1E90FF;
+.password-toggle:hover {
+    color: #00D4FF;
+    border-color: rgba(0, 212, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
 }
 
-input {
-  background: rgba(255,255,255,0.4);
-  border: none;
-  position: relative;
-  -webkit-box-shadow: 0 2px 10px 1px rgba(0,0,0,0.5);
-  box-shadow: 0 2px 10px 1px rgba(0,0,0,0.5);
+/* Quantum Form Options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 0;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-::-webkit-input-placeholder { color: #666;}
-:-moz-placeholder { color: #666; }
-::-moz-placeholder { color: #666; }
-:-ms-input-placeholder { color: #666; }
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    position: relative;
+}
+
+.remember-me input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    transition: all var(--transition-quantum);
+}
+
+.remember-me input[type="checkbox"]:checked {
+    background: var(--quantum-primary);
+    border-color: transparent;
+    animation: quantumPulse 0.6s ease;
+}
+
+@keyframes quantumPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#reset-pass {
+    color: #00D4FF;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all var(--transition-quantum);
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+#reset-pass:hover {
+    color: #FFFFFF;
+    background: rgba(0, 212, 255, 0.15);
+    border-color: rgba(0, 212, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+}
+
+/* Quantum Button */
+.submit {
+    width: 100%;
+    margin: 32px 0 40px;
+    position: relative;
+}
+
+.quantum-button {
+    width: 100%;
+    padding: 24px 40px;
+    background: var(--quantum-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-quantum);
+    position: relative;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 
+        0 0 60px rgba(0, 212, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.quantum-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.8s ease;
+}
+
+.quantum-button:hover {
+    transform: translateY(-6px);
+    box-shadow: 
+        0 0 80px rgba(0, 212, 255, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.quantum-button:hover::before {
+    left: 100%;
+}
+
+.quantum-button:active {
+    transform: translateY(-3px);
+}
+
+.quantum-button::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: var(--quantum-primary);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    filter: blur(20px);
+    transition: opacity var(--transition-quantum);
+}
+
+.quantum-button:hover::after {
+    opacity: 0.5;
+}
+
+/* Neural Divider */
+.neural-divider {
+    display: flex;
+    align-items: center;
+    margin: 40px 0;
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.neural-divider::before,
+.neural-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(0, 212, 255, 0.3), 
+        rgba(0, 212, 255, 0.6),
+        rgba(0, 212, 255, 0.3),
+        transparent
+    );
+}
+
+.neural-divider span {
+    padding: 0 24px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 8px 20px;
+    border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+/* Holographic Social Login */
+.social-matrix {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.social-node {
+    padding: 18px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-quantum);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-node::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--quantum-primary);
+    opacity: 0;
+    transition: opacity var(--transition-quantum);
+}
+
+.social-node:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+}
+
+.social-node:hover::before {
+    opacity: 0.1;
+}
+
+.social-node i {
+    position: relative;
+    z-index: 1;
+}
+
+/* Quantum Portal Link */
+.portal-link {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.portal-link a {
+    color: #00D4FF;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition-quantum);
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.portal-link a:hover {
+    color: #FFFFFF;
+    background: rgba(0, 212, 255, 0.15);
+    border-color: rgba(0, 212, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+}
+
+/* Biometric Matrix */
+.biometric-matrix {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.neural-scan {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-quantum);
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 1rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.neural-scan:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+}
+
+.neural-scan i {
+    font-size: 1.5rem;
+    color: #00D4FF;
+}
+
+/* Responsive Quantum Design */
+@media (max-width: 768px) {
+    .flex-container {
+        padding: 16px;
+    }
+    
+    .login-form {
+        padding: 48px 32px;
+        border-radius: var(--radius-md);
+    }
+    
+    h1 {
+        font-size: 3.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.125rem;
+    }
+    
+    .form-input {
+        padding: 20px 24px;
+        padding-left: 56px;
+        font-size: 1rem;
+    }
+    
+    .social-matrix {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .quantum-button {
+        padding: 20px 32px;
+        font-size: 1.125rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+    
+    .login-form {
+        padding: 40px 24px;
+        border-radius: var(--radius-md);
+    }
+    
+    h1 {
+        font-size: 2.75rem;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    
+    .social-matrix {
+        grid-template-columns: 1fr;
+    }
+    
+    .neural-scan {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .quantum-button {
+        padding: 18px 24px;
+    }
+}
+
+/* Accessibility for Neural Interfaces */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .login-form:hover::after {
+        animation: none;
+    }
+    
+    .quantum-button:hover {
+        transform: none;
+    }
+}
+
+/* Neural Focus States */
+.form-input:focus-visible,
+.quantum-button:focus-visible,
+.social-node:focus-visible,
+#reset-pass:focus-visible,
+.neural-scan:focus-visible {
+    outline: 2px solid #00D4FF;
+    outline-offset: 3px;
+}
+
+/* Quantum Loading State */
+.quantum-button.loading {
+    color: transparent;
+    pointer-events: none;
+}
+
+.quantum-button.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #00D4FF;
+    border-radius: 50%;
+    animation: quantumSpin 1s linear infinite;
+}
+
+@keyframes quantumSpin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Neural Error/Success States */
+.neural-feedback {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    animation: neuralSlide 0.4s var(--transition-neural);
+    backdrop-filter: blur(10px);
+}
+
+@keyframes neuralSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.neural-error {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    color: #FF6B6B;
+}
+
+.neural-success {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    color: #00D4FF;
+}
