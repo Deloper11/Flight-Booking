@@ -1,95 +1,139 @@
 <?php
-if(isset($_POST['signup_submit'])) {
-    require '../helpers/init_conn_db.php';    
-    $username = $_POST['username'];
-    $email_id = $_POST['email_id'];
-    $password = $_POST['password'];
-    $password_repeat = $_POST['password_repeat'];
-    if(!filter_var($email_id,FILTER_VALIDATE_EMAIL)) {
-        header('Location: ../register.php?error=invalidemail');
-        exit();
-    }
-    else if($password !== $password_repeat) {
-        header('Location: ../register.php?error=pwdnotmatch');
-        exit();
-    }
-    else {
-        $username_sql = 'SELECT username FROM Users WHERE username=?';
-        $email_sql = 'SELECT email FROM Users WHERE email=?';
-        $stmt = mysqli_stmt_init($conn);
-        if(!mysqli_stmt_prepare($stmt,$username_sql)) {
-            header('Location: ../register.php?error=sqlerror');
-            exit();            
-        } else {
-            mysqli_stmt_bind_param($stmt,'s',$username);            
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_store_result($stmt);            
-            $username_check = mysqli_stmt_num_rows($stmt);
-            if($username_check > 0) {
-                header('Location: ../register.php?error=usernameexists');
-                exit();                  
-            } else {
-                $stmt = mysqli_stmt_init($conn);
-                if(!mysqli_stmt_prepare($stmt,$email_sql)) {
-                    header('Location: ../register.php?error=sqlerror');
-                    exit();            
-                } else {
-                    mysqli_stmt_bind_param($stmt,'s',$email_id);            
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_store_result($stmt);
-                    $email_check = mysqli_stmt_num_rows($stmt);
-                    if($email_check > 0) {
-                        header('Location: ../register.php?error=emailexists');
-                        exit();   
-                    } else {
-                        $sql = 'INSERT INTO Users (username,email,password) VALUES (?,?,?)';
-                        $stmt = mysqli_stmt_init($conn);
-                        if(!mysqli_stmt_prepare($stmt,$sql)) {
-                            header('Location: ../register.php?error=sqlerror');
-                            exit();            
-                        } else {
-                            $pwd_hash = password_hash($password, PASSWORD_DEFAULT);
-                            mysqli_stmt_bind_param($stmt,'sss',$username,$email_id,$pwd_hash);            
-                            mysqli_stmt_execute($stmt);  
-                            
-                            // LOGIN USer                            
-                            $sql = 'SELECT * FROM Users WHERE username=? OR email=?;';
-                            $stmt = mysqli_stmt_init($conn);
-                            if(!mysqli_stmt_prepare($stmt,$sql)) {
-                                header('Location: ../index.php?error=sqlerror');
-                                exit();            
-                            } else {
-                                mysqli_stmt_bind_param($stmt,'ss',$username,$username);            
-                                mysqli_stmt_execute($stmt);
-                                $result = mysqli_stmt_get_result($stmt);
-                                if($row = mysqli_fetch_assoc($result)) {
-                                    $pwd_check = password_verify($password,$row['password']);
-                                    if($pwd_check == false) {
-                                        header('Location: ../index.php?error=wrongpwd');
-                                        exit();    
-                                    }
-                                    else if($pwd_check == true) {
-                                        session_start();
-                                        $_SESSION['userId'] = $row['user_id'];
-                                        $_SESSION['userUid'] = $row['username'];
-                                        $_SESSION['userMail'] = $row['email'];                                        
-                                        header('Location: ../index.php?login=success');
-                                        exit();                  
-                                    } else {
-                                        header('Location: ../index.php?error=invalidcred');
-                                        exit();                    
-                                    }
-                                }
-                            }                                                    
-                        }
-                    }
-                }               
-            }            
-        }
-    }
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
-} else {
-    header('Location: ../register.php');
-    exit();  
+// Generate CSRF token if not exists
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+?>
+<form method="POST" action="includes/register.inc.php" id="registerForm">
+    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+    
+    <div class="form-group">
+        <label for="username">Username *</label>
+        <input type="text" id="username" name="username" 
+               pattern="[a-zA-Z0-9_]{3,30}"
+               title="3-30 characters, letters, numbers, underscores only"
+               value="<?php echo htmlspecialchars($_SESSION['form_data']['username'] ?? ''); ?>"
+               required>
+    </div>
+    
+    <div class="form-group">
+        <label for="email_id">Email *</label>
+        <input type="email" id="email_id" name="email_id" 
+               value="<?php echo htmlspecialchars($_SESSION['form_data']['email'] ?? ''); ?>"
+               required>
+    </div>
+    
+    <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" id="password" name="password" 
+               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$"
+               title="At least 12 characters, with uppercase, lowercase, number, and special character"
+               required>
+        <div class="password-strength">
+            <div class="strength-meter"></div>
+            <div class="strength-feedback"></div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="password_repeat">Confirm Password *</label>
+        <input type="password" id="password_repeat" name="password_repeat" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="referral_code">Referral Code (Optional)</label>
+        <input type="text" id="referral_code" name="referral_code">
+    </div>
+    
+    <div class="form-check">
+        <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+        <label for="terms" class="form-check-label">
+            I agree to the <a href="/terms.php" target="_blank">Terms and Conditions</a> and <a href="/privacy.php" target="_blank">Privacy Policy</a> *
+        </label>
+    </div>
+    
+    <div class="form-check">
+        <input type="checkbox" id="newsletter" name="newsletter" class="form-check-input"
+               <?php echo isset($_SESSION['form_data']['newsletter']) && $_SESSION['form_data']['newsletter'] ? 'checked' : ''; ?>>
+        <label for="newsletter" class="form-check-label">
+            Subscribe to our newsletter
+        </label>
+    </div>
+    
+    <!-- Add reCAPTCHA v3 -->
+    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+    
+    <button type="submit" name="signup_submit" class="btn-register">
+        Create Account
+    </button>
+</form>
+
+<!-- Password strength checker -->
+<script>
+document.getElementById('password').addEventListener('input', function(e) {
+    const password = e.target.value;
+    const strength = checkPasswordStrength(password);
+    updateStrengthMeter(strength);
+});
+
+function checkPasswordStrength(password) {
+    let score = 0;
+    
+    // Length
+    if (password.length >= 12) score += 2;
+    else if (password.length >= 8) score += 1;
+    
+    // Character variety
+    if (/[a-z]/.test(password)) score += 1;
+    if (/[A-Z]/.test(password)) score += 1;
+    if (/[0-9]/.test(password)) score += 1;
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    
+    // No repeated characters
+    if (!/(.)\1{2,}/.test(password)) score += 1;
+    
+    // No sequential patterns
+    if (!/(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)/i.test(password)) {
+        score += 1;
+    }
+    if (!/(012|123|234|345|456|567|678|789|890)/.test(password)) {
+        score += 1;
+    }
+    
+    return Math.min(score, 10); // Max score 10
+}
+
+function updateStrengthMeter(score) {
+    const meter = document.querySelector('.strength-meter');
+    const feedback = document.querySelector('.strength-feedback');
+    
+    let strength = 'weak';
+    let color = '#dc3545';
+    let message = 'Weak password';
+    
+    if (score >= 7) {
+        strength = 'strong';
+        color = '#28a745';
+        message = 'Strong password';
+    } else if (score >= 4) {
+        strength = 'medium';
+        color = '#ffc107';
+        message = 'Medium strength';
+    }
+    
+    meter.style.width = (score * 10) + '%';
+    meter.style.backgroundColor = color;
+    feedback.textContent = message;
+    feedback.style.color = color;
+}
+</script>
+
+<!-- reCAPTCHA v3 -->
+<script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY"></script>
+<script>
+grecaptcha.ready(function() {
+    grecaptcha.execute('YOUR_SITE_KEY', {action: 'register'}).then(function(token) {
+        document.getElementById('g-recaptcha-response').value = token;
+    });
+});
+</script>
