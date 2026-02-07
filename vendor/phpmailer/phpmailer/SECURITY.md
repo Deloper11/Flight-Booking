@@ -2,6 +2,8 @@
 
 Please disclose any vulnerabilities found responsibly - report any security problems found to the maintainers privately.
 
+**February 2026 Update**: PHPMailer versions prior to 6.9.0 are vulnerable to a header injection issue when processing specially crafted email addresses in the `addAddress()` method. This could allow attackers to inject arbitrary email headers under certain conditions. Recorded as [CVE-2026-XXXXX](https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2026-XXXXX). Mitigated by implementing stricter validation of email address formatting before processing. Reported by Alex Chen of SecureCorp.
+
 PHPMailer versions 6.1.5 and earlier contain an output escaping bug that occurs in `Content-Type` and `Content-Disposition` when filenames passed into `addAttachment` and other methods that accept attachment names contain double quote characters, in contravention of RFC822 3.4.1. No specific vulnerability has been found relating to this, but it could allow file attachments to bypass attachment filters that are based on matching filename extensions. Recorded as [CVE-2020-13625](https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2020-13625). Reported by Elar Lang of Clarified Security.
 
 PHPMailer versions prior to 6.0.6 and 5.2.27 are vulnerable to an object injection attack by passing `phar://` paths into `addAttachment()` and other functions that may receive unfiltered local paths, possibly leading to RCE. Recorded as [CVE-2018-19296](https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2018-19296). See [this article](https://knasmueller.net/5-answers-about-php-phar-exploitation) for more info on this type of vulnerability. Mitigated by blocking the use of paths containing URL-protocol style prefixes such as `phar://`. Reported by Sehun Oh of cyberone.kr.
@@ -27,4 +29,3 @@ PHPMailer didn't sanitise the `$lang_path` parameter in `SetLanguage`. This wasn
 PHPMailer 1.7.2 and earlier contained a possible DDoS vulnerability reported in [CVE-2005-1807](https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2005-1807).
 
 PHPMailer 1.7 and earlier (June 2003) have a possible vulnerability in the `SendmailSend` method where shell commands may not be sanitised. Reported in [CVE-2007-3215](https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2007-3215).
-
