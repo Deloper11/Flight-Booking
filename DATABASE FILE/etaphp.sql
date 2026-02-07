@@ -5,7 +5,7 @@
 -- Host:localhost 
 -- Generation Time: Feb 06, 2026 at 09:35 PM
 -- Server version: 10.4.14-MariaDB
--- PHP Version: 7.4.10
+-- PHP Version: 7.4.10,8.2.0,8.4.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -881,7 +881,67 @@ ALTER TABLE `pma__savedsearches`
 CREATE DATABASE IF NOT EXISTS `test` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `test`;
 COMMIT;
+-- Update the cities table - fixing the column name and data
+ALTER TABLE `cities` CHANGE `city Name  ` `city` varchar(25) NOT NULL;
 
+-- Remove duplicate entry for Ukunda
+DELETE FROM `cities` WHERE `city` = 'Ukunda' LIMIT 1;
+
+-- Add new cities for 2026
+INSERT INTO `cities` (`city`) VALUES 
+('Isiolo'),
+('Marsabit'),
+('Mandera'),
+('Kakamega'),
+('Bungoma');
+
+-- Update flights to 2026 dates
+UPDATE `flight` SET 
+  `arrivale` = '2026-02-15 15:15:00',
+  `departure` = '2026-02-15 14:30:00'
+WHERE `flight_id` = 22;
+
+UPDATE `flight` SET 
+  `arrivale` = '2026-02-15 17:15:00',
+  `departure` = '2026-02-15 16:30:00'
+WHERE `flight_id` = 23;
+
+-- Add new flights for 2026
+INSERT INTO `flight` (`flight_id`, `admin_id`, `arrivale`, `departure`, `Destination`, `source`, `airline`, `Seats`, `duration`, `Price`, `status`, `issue`, `last_seat`, `bus_seats`, `last_bus_seat`) VALUES
+(24, 1, '2026-03-10 10:30:00', '2026-03-10 09:00:00', 'Mombasa', 'Nairobi', 'Jambo Jet', '180', '90', 7500, '', NULL, '', 20, ''),
+(25, 1, '2026-03-12 14:00:00', '2026-03-12 12:30:00', 'Kisumu', 'Mombasa', 'Kenya Airways', '198', '90', 8500, '', NULL, '', 20, ''),
+(26, 1, '2026-03-15 18:30:00', '2026-03-15 17:00:00', 'Eldoret', 'Nairobi', 'Safarilink', '168', '60', 6500, '', NULL, '', 20, '');
+
+-- Update payment expiry dates to 2026
+UPDATE `payment` SET `expire_date` = '10/26' WHERE `card_no` = '345678987654';
+UPDATE `payment` SET `expire_date` = '11/27' WHERE `card_no` = '4424610005266893';
+
+-- Update passenger profile for 2026
+UPDATE `passenger_profile` SET `dob` = '1992-05-20 00:00:00' WHERE `passenger_id` = 1;
+UPDATE `passenger_profile` SET `dob` = '1992-05-20 00:00:00' WHERE `passenger_id` = 2;
+
+-- Add new feedback for 2026
+INSERT INTO `feedback` (`feed_id`, `email`, `q1`, `q2`, `q3`, `rate`) VALUES
+(2, 'mary12@gmail.com', 'Excellent booking experience with the new 2026 features', 'Online Search', 'Would love to see mobile app integration', 5),
+(3, 'testuser2026@email.com', 'The new routes to Isiolo and Marsabit are very convenient', 'Social Media', 'More payment options would be great', 4);
+
+-- Add new users for 2026
+INSERT INTO `users` (`user_id`, `username`, `email`, `password`) VALUES
+(7, 'Traveler2026', 'traveler2026@email.com', '$2y$10$DqsHHNGm2AT5UxXajKaSqu.3H8Xg2CKoqCOGuHOfIJI1PB9mc4JYe'),
+(8, 'BusinessFly', 'corporate@business.com', '$2y$10$6V1vAh/qycO1Mc7rhryUWOHk6kXRkVFqZWr4oOs5yvFCzbEU8cL1O');
+
+-- Add new airlines for 2026
+INSERT INTO `airline` (`airline_id`, `name`, `seats`) VALUES
+(21, 'East African Air', 210),
+(22, 'Fly Kenya', 195),
+(23, 'Air Kenya Express', 185);
+
+-- Clean up pwdreset table (remove old reset tokens)
+DELETE FROM `pwdreset` WHERE `pwd_reset_expires` < '1700000000';
+
+-- Update the database creation timestamp in the comments
+-- Note: This is just a comment, but we're updating it for documentation
+-- The actual file header comments would need to be updated manually
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
